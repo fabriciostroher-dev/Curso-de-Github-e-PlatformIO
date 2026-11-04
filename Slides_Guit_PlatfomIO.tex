@@ -66,7 +66,7 @@
         \begin{itemize}
             \item PlatformIO IDE
             \item C/C++ Extension Pack
-            \item Wokwi License
+            \item Wokwi Simulador
         \end{itemize}
     \end{itemize}
     \vfill
@@ -89,9 +89,6 @@
     \centering
     \includegraphics[width = 0.85\linewidth]{Figuras/Platformio2.png}
 \end{frame}
-% ============================================================
-% Continuação: PlatformIO, projeto exemplo e GitHub
-% ============================================================
 
 \begin{frame}{PlatformIO: estrutura típica do projeto}
     \begin{columns}[T]
@@ -109,7 +106,7 @@
             \centering
             \resizebox{\linewidth}{!}{%
             \begin{tikzpicture}[
-                node distance=0.5cm,
+                node distance=0.22cm,
                 box/.style={draw, rounded corners, align=left, font=\ttfamily\small, fill=white, minimum width=4.2cm},
                 arr/.style={-Latex, thick}
             ]
@@ -130,11 +127,14 @@
     \end{columns}
     \vfill
     \footnotesize{Dica: mantenha apenas o necessário no repositório; artefatos de build ficam no \texttt{.pio/}.}
+    \note{Aqui abrir um novo projeto para entender a questão}
 \end{frame}
 
 \begin{frame}[fragile]{\texttt{platformio.ini}: exemplo comentado}
-    \begin{block}{Configuração mínima para Arduino}
-        \begin{verbatim}
+    \begin{columns}
+        \begin{column}{.5\textwidth}   
+            \begin{block}{Configuração mínima para Arduino}
+                \begin{verbatim}
 [env:uno]
 platform = atmelavr
 board = uno
@@ -145,14 +145,19 @@ lib_deps =
     paulstoffregen/OneWire
     milesburton/DallasTemperature
     marcoschwartz/LiquidCrystal_I2C
-        \end{verbatim}
-    \end{block}
-    \begin{itemize}
-        \item \texttt{platform}: plataforma/microcontrolador
-        \item \texttt{board}: placa usada
-        \item \texttt{framework}: Arduino
-        \item \texttt{lib\_deps}: dependências gerenciadas pelo PlatformIO
-    \end{itemize}
+                \end{verbatim}
+            \end{block}
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \begin{itemize}
+                \item \texttt{platform}: plataforma/microcontrolador
+                \item \texttt{board}: placa usada
+                \item \texttt{framework}: Arduino
+                \item \texttt{lib\_deps}: dependências gerenciadas pelo PlatformIO
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \href{https://docs.platformio.org/en/latest/projectconf/index.html}{\beamergotobutton{Documentação Oficial do platformio.ini}}
 \end{frame}
 
 \begin{frame}{Ciclo de trabalho no PlatformIO}
@@ -186,7 +191,7 @@ lib_deps =
 \end{frame}
 
 \begin{frame}{Estudo de caso do curso: monitor de temperatura}
-    \begin{columns}[T]
+    \begin{columns}
         \begin{column}{0.4\textwidth}
             \textbf{Hardware}
             \begin{itemize}
@@ -228,16 +233,12 @@ lib_deps =
     \end{columns}
 \end{frame}
 
-% ============================================================
-% Slides sobre o Wokwi (inserir após "Estudo de caso")
-% ============================================================
-
 \begin{frame}{Wokwi: simulação de circuitos no VS Code}
-    \begin{columns}[T]
-        \begin{column}{0.5\textwidth}
+    \begin{columns}
+        \begin{column}{0.6\textwidth}
             \begin{itemize}
                 \item Simulador de eletrônica e microcontroladores
-                \item Extensão oficial: \textbf{Wokwi for VS Code}
+                \item Extensão oficial: \textbf{Wokwi Simulador}
                 \item Integra-se ao PlatformIO e outros toolchains
                 \item Simula o firmware compilado, sem hardware físico
                 \item Ideal para aulas, prototipagem e depuração
@@ -246,8 +247,9 @@ lib_deps =
             \begin{block}{No curso}
                 O mesmo projeto do monitor de temperatura será executado no Wokwi, permitindo testar LCD, DS18B20 e botões antes da montagem real.
             \end{block}
+            \href{https://docs.wokwi.com/vscode/project-config}{\beamergotobutton{Documentação oficial do Wokwi}}
         \end{column}
-        \begin{column}{0.5\textwidth}
+        \begin{column}{0.4\textwidth}
             \centering
             \begin{tikzpicture}[
                 bloco/.style={draw, rounded corners, fill=white, align=center, minimum width=3.2cm, minimum height=1.0cm},
@@ -256,7 +258,7 @@ lib_deps =
                 \node[bloco] (pio) {PlatformIO};
                 \node[bloco, below=of pio] (build) {Build\\\texttt{firmware.hex}};
                 \node[bloco, below=of build] (wokwi) {Wokwi\\(simulação)};
-                \node[bloco, right=1.2cm of wokwi] (circuito) {Circuito virtual};
+                \node[bloco, below=of wokwi] (circuito) {Circuito virtual};
                 \draw[arr] (pio) -- (build);
                 \draw[arr] (build) -- (wokwi);
                 \draw[arr] (wokwi) -- (circuito);
@@ -302,7 +304,7 @@ elf = '.pio/build/uno/firmware.elf'
 \end{frame}
 
 \begin{frame}{Circuito do monitor de temperatura no Wokwi}
-    \begin{columns}[T]
+    \begin{columns}
         \begin{column}{0.45\textwidth}
             \textbf{Componentes no \texttt{diagram.json}}
             \begin{itemize}
@@ -387,6 +389,66 @@ pio run
     \end{itemize}
 \end{frame}
 
+\begin{frame}{Arquitetura Modular (com funções) do exemplo}
+    \begin{columns}[c]
+        \begin{column}{0.45\textwidth}
+            \textbf{Organização}
+            \begin{itemize}
+                \item \texttt{main3.cpp}: Apenas orquestra as chamadas no \texttt{loop()}
+                \item \texttt{estado.h}: Centraliza as variáveis globais (sensores, telas, botões)
+                \item \texttt{botoes.cpp}: Leitura física dos pinos
+                \item \texttt{sensores.cpp}: Controle do barramento OneWire
+                \item \texttt{telas.cpp}: Lógica de navegação e desenho no LCD
+            \end{itemize}
+            \vspace{0.2cm}
+            \begin{block}{Característica}
+                \small
+                O código é mais limpo que o monolítico, mas ainda compartilha o estado global (C-style).
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.55\textwidth}
+            \centering
+            \resizebox{\linewidth}{!}{%
+            \begin{tikzpicture}[
+                bloco/.style={draw, rounded corners, fill=white, align=center, minimum width=2.8cm, minimum height=0.8cm, font=\small},
+                estado/.style={draw, rounded corners, fill=blue!10, align=center, minimum width=3.5cm, minimum height=0.8cm, font=\ttfamily\small},
+                arr/.style={-Latex, thick, color=gray!80}
+            ]
+                % Main
+                \node[bloco] (main) {\texttt{main3.cpp}};
+                
+                % Modules
+                \node[bloco, below left=1.2cm and -0.2cm of main] (botoes) {\texttt{botoes.cpp}};
+                \node[bloco, below=1.2cm of main] (sensores) {\texttt{sensores.cpp}};
+                \node[bloco, below right=1.2cm and -0.2cm of main] (telas) {\texttt{telas.cpp}};
+                
+                % State
+                \node[estado, below=1.0cm of sensores] (estado) {\texttt{estado.h / .cpp}};
+                
+                % Hardware
+                \node[bloco, left=0.5cm of botoes] (hw) {Botões};
+                \node[bloco, right=0.5cm of telas] (lcd) {LCD};
+                \node[bloco, below=0.5cm of estado] (sensors) {Sensores};
+                
+                % Connections
+                \draw[arr] (main) -- (botoes);
+                \draw[arr] (main) -- (sensores);
+                \draw[arr] (main) -- (telas);
+                
+                \draw[arr, dashed] (botoes) -- (estado);
+                \draw[arr, dashed] (sensores) -- (estado);
+                \draw[arr, dashed] (telas) -- (estado);
+                
+                \draw[arr] (botoes) -- (hw);
+                \draw[arr] (telas) -- (lcd);
+                \draw[arr] (sensores) -- (sensors);
+            \end{tikzpicture}%
+            }
+        \end{column}
+    \end{columns}
+\end{frame}
+
 \begin{frame}{Arquitetura modular do exemplo}
     \centering
     \resizebox{\textwidth}{!}{%
@@ -428,10 +490,6 @@ pio run
         \item Versionar cada etapa com mensagens de commit claras
         \item Manter o \texttt{loop()} curto e legível
     \end{itemize}
-    \vfill
-    \begin{block}{Exercício sugerido}
-        Escolha uma das versões (\texttt{main.cpp}, \texttt{main2.cpp}, \texttt{main3.cpp} ou \texttt{main4.cpp}), explique sua arquitetura e proponha uma melhoria.
-    \end{block}
 \end{frame}
 
 \section{GitHub}
@@ -509,6 +567,13 @@ git push -u origin main
         \end{itemize}
         \item Usar commits pequenos e descritivos
     \end{itemize}
+\end{frame}
+
+\begin{frame}{Atividade}
+    \begin{block}{Exercício}
+        Escolha uma das versões (\texttt{main.cpp}, \texttt{main2.cpp}, \texttt{main3.cpp} ou \texttt{main4.cpp}), explique sua arquitetura e proponha uma melhoria.
+        Esta melhoria deve ser implementada em uma branch separada, com commits claros, e integrada ao repositório remoto via Pull Request.
+    \end{block}
 \end{frame}
 
 \begin{frame}{Checklist final do curso}
