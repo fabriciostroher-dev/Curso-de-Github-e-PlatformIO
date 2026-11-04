@@ -1,0 +1,70 @@
+{
+  "version": 1,
+  "author": "Fabricio Ströher da Silva",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-arduino-uno", "id": "uno", "top": 48.6, "left": -135, "attrs": {} },
+    {
+      "type": "wokwi-ds18b20",
+      "id": "temp1",
+      "top": 56.47,
+      "left": 215.28,
+      "attrs": { "deviceID": "FFCE86861604" }
+    },
+    {
+      "type": "wokwi-ds18b20",
+      "id": "temp2",
+      "top": 142.87,
+      "left": 215.28,
+      "attrs": { "deviceID": "FFEBDD521604" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r1",
+      "top": 148.8,
+      "left": -77.35,
+      "rotate": 90,
+      "attrs": { "value": "4700" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn1",
+      "top": -11.8,
+      "left": 38.4,
+      "attrs": { "color": "black", "xray": "1", "bounce": "1" }
+    },
+    {
+      "type": "wokwi-pushbutton-6mm",
+      "id": "btn2",
+      "top": -11.8,
+      "left": -19.2,
+      "attrs": { "color": "black", "xray": "1" }
+    },
+    {
+      "type": "wokwi-lcd2004",
+      "id": "lcd1",
+      "top": 313.6,
+      "left": -138.4,
+      "attrs": { "pins": "i2c" }
+    }
+  ],
+  "connections": [
+    [ "uno:5V", "r1:2", "red", [ "v-28.9", "h-63.4" ] ],
+    [ "temp1:VCC", "temp2:VCC", "red", [ "v19.2", "h19.2", "v19.2" ] ],
+    [ "temp2:VCC", "uno:5V", "red", [ "v19.2", "h-215" ] ],
+    [ "temp1:GND", "temp2:GND", "black", [ "v9.6", "h-19.2", "v76.8" ] ],
+    [ "temp2:GND", "uno:GND.3", "black", [ "v67.2", "h-176.8" ] ],
+    [ "temp2:DQ", "uno:9", "yellow", [ "v38.4", "h-57.6", "v-96", "h0", "v-96", "h-124.8" ] ],
+    [ "temp1:DQ", "uno:9", "yellow", [ "v28.8", "h-57.6", "v-96", "h-105.6", "h-39.2" ] ],
+    [ "btn2:1.r", "btn1:1.l", "black", [ "v0" ] ],
+    [ "btn2:2.r", "uno:11", "green", [ "h0" ] ],
+    [ "btn1:2.l", "uno:10", "green", [ "h0" ] ],
+    [ "lcd1:GND", "uno:GND.2", "black", [ "h-9.6", "v-38.4", "h163.2" ] ],
+    [ "lcd1:VCC", "uno:5V", "red", [ "h-19.2", "v-57.5", "h172.8" ] ],
+    [ "lcd1:SDA", "uno:A4", "green", [ "h-28.8", "v-76.6", "h220.8" ] ],
+    [ "lcd1:SCL", "uno:A5", "green", [ "h-38.4", "v-95.7", "h288" ] ],
+    [ "uno:GND.1", "btn2:1.l", "black", [ "v-38.4", "h-18.9", "v-28.8", "h-9.6" ] ],
+    [ "r1:1", "temp1:DQ", "yellow", [ "h201.6", "v9.6", "h67.2" ] ]
+  ],
+  "dependencies": {}
+}
