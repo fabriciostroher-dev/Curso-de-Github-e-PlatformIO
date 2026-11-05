@@ -1,4 +1,0 @@
-\babel@toc {brazilian}{}\relax 
-\beamer@sectionintoc {1}{VScode}{3}{0}{1}
-\beamer@sectionintoc {2}{PlatformIO}{7}{0}{2}
-\beamer@sectionintoc {3}{GitHub}{21}{0}{3}
